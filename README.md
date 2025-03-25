@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Interactive World Map Application
+
+This is a Next.js web application that allows users to interact with a world map by clicking on locations, adding labels, and saving the coordinates.
+
+## Features
+
+- Display a world map
+- Two interaction modes:
+  - Add Labels: Click to add markers with custom labels
+  - Find Closest Label: Click to find the nearest existing marker
+- Add labels to markers
+- View saved coordinates in a table format
+- Remove markers and their coordinates with a single click
+- Persist coordinates using a simple JSON-based storage
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18.17.0 or later
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd map-coordinates-app
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn
+# or
+pnpm install
+```
+
+3. Run the development server:
 ```bash
 npm run dev
 # or
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. When the application loads, you'll see a world map in "Add Labels" mode.
+2. You can switch between two modes using the mode toggle button:
+   - **Add Labels Mode** (blue): 
+     - Click anywhere on the map to start adding a marker.
+     - A dialog will appear prompting you to add a label for the location.
+     - Enter a label and click "Save" to add the marker to the map.
+     - The marker will appear as a red dot on the map.
+   - **Find Closest Label Mode** (green):
+     - Click anywhere on the map to find the closest existing marker.
+     - The closest marker will be highlighted in green.
+     - Information about the closest marker will be displayed below the map.
+     - The corresponding entry in the table will also be highlighted.
+3. In either mode, you can hover over a marker to see its label.
+4. You can remove a marker by clicking the "X" button next to its entry in the table.
 
-## Learn More
+## Technical Implementation
 
-To learn more about Next.js, take a look at the following resources:
+- Built with Next.js and TypeScript
+- Uses the App Router architecture
+- Styled with Tailwind CSS
+- Simple JSON file-based storage for coordinates
+- RESTful API for coordinate management
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `src/app`: Main application pages and API routes
+- `src/components`: React components, including the InteractiveMap component
+- `public/images`: Map images and other static assets
+- `data`: JSON storage for coordinates
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License.

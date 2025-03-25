@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Coordinate data
+/data/*.json
+
+# Next.js build output
+.next/
+out/
+build/
+
+# Local data
+/data/*.json
