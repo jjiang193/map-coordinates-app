@@ -2,16 +2,21 @@ import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
-// Path to our JSON "database" file
-const dataFilePath = path.join(process.cwd(), 'data', 'coordinates.json');
+// Set dynamic to force-dynamic to ensure that API routes are not statically generated
+export const dynamic = 'force-dynamic';
+
+// Path to our JSON "database" file - in production we'll use Vercel's tmp directory
+const getDataFilePath = () => {
+  // Use /tmp directory in Vercel's serverless environment
+  const baseDir = process.env.VERCEL ? '/tmp' : process.cwd();
+  return path.join(baseDir, 'coordinates.json');
+};
 
 // Ensure the data directory exists
-const ensureDataDir = () => {
-  const dir = path.join(process.cwd(), 'data');
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
+const ensureDataFile = () => {
+  const dataFilePath = getDataFilePath();
   
+  // Check if file exists, if not create it with empty array
   if (!fs.existsSync(dataFilePath)) {
     fs.writeFileSync(dataFilePath, JSON.stringify([]));
   }
@@ -20,11 +25,12 @@ const ensureDataDir = () => {
 // GET handler to retrieve all coordinates
 export async function GET() {
   try {
-    ensureDataDir();
+    ensureDataFile();
     
     // Read the data file
+    const dataFilePath = getDataFilePath();
     const data = fs.readFileSync(dataFilePath, 'utf8');
-    const coordinates = JSON.parse(data);
+    const coordinates = JSON.parse(data || '[]');
     
     return NextResponse.json(coordinates);
   } catch (error) {
@@ -36,7 +42,7 @@ export async function GET() {
 // POST handler to save a new coordinate
 export async function POST(request: NextRequest) {
   try {
-    ensureDataDir();
+    ensureDataFile();
     
     // Parse the request body
     const newCoordinate = await request.json();
@@ -50,8 +56,9 @@ export async function POST(request: NextRequest) {
     }
     
     // Read existing data
+    const dataFilePath = getDataFilePath();
     const data = fs.readFileSync(dataFilePath, 'utf8');
-    const coordinates = JSON.parse(data);
+    const coordinates = JSON.parse(data || '[]');
     
     // Add the new coordinate with a unique ID if not provided
     const coordinateToSave = {
@@ -78,7 +85,7 @@ export async function POST(request: NextRequest) {
 // DELETE handler to remove a coordinate
 export async function DELETE(request: NextRequest) {
   try {
-    ensureDataDir();
+    ensureDataFile();
     
     // Get the ID from the URL
     const url = new URL(request.url);
@@ -92,8 +99,9 @@ export async function DELETE(request: NextRequest) {
     }
     
     // Read existing data
+    const dataFilePath = getDataFilePath();
     const data = fs.readFileSync(dataFilePath, 'utf8');
-    const coordinates = JSON.parse(data);
+    const coordinates = JSON.parse(data || '[]');
     
     // Filter out the coordinate with the given ID
     const filteredCoordinates = coordinates.filter(

@@ -7,7 +7,7 @@ This is a Next.js web application that allows users to interact with a world map
 - Display a world map
 - Two interaction modes:
   - Add Labels: Click to add markers with custom labels
-  - Find Closest Label: Click to find the nearest existing marker
+  - Find Closest Label: Click to find the nearest existing marker using a KD-tree for efficient searches
 - Add labels to markers
 - View saved coordinates in a table format
 - Remove markers and their coordinates with a single click
@@ -63,6 +63,27 @@ pnpm dev
      - The corresponding entry in the table will also be highlighted.
 3. In either mode, you can hover over a marker to see its label.
 4. You can remove a marker by clicking the "X" button next to its entry in the table.
+
+## Deployment to Vercel
+
+This application is optimized for deployment on Vercel. Follow these steps to deploy:
+
+1. Push your code to a GitHub repository
+2. Go to [Vercel](https://vercel.com) and sign up or log in
+3. Click "New Project" and import your GitHub repository
+4. Keep the default settings and click "Deploy"
+
+The application uses Vercel's `/tmp` directory for storage in production, which means:
+- Coordinates are stored temporarily and may be cleared periodically
+- For a production environment, consider implementing a more persistent storage solution like a database
+
+### Environment Variables
+
+No additional environment variables are required for basic functionality.
+
+### Custom Domains
+
+After deployment, you can configure a custom domain in the Vercel dashboard under the "Domains" section of your project.
 
 ## Technical Implementation
 

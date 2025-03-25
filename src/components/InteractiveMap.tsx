@@ -3,8 +3,13 @@
 import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { KDTree } from '@/utils/KDTree';
-import { storageService } from '@/utils/storage';
-import { Coordinate } from '@/types/Coordinate';
+
+interface Coordinate {
+  id: string;
+  x: number;
+  y: number;
+  label: string;
+}
 
 type Mode = 'add' | 'find';
 
@@ -25,11 +30,16 @@ export default function InteractiveMap() {
     const fetchCoordinates = async () => {
       try {
         setLoading(true);
-        const data = await storageService.getAll();
-        setCoordinates(data);
-        
-        // Build the KD-tree with the fetched coordinates
-        kdTreeRef.current.build(data);
+        const response = await fetch('/api/coordinates');
+        if (response.ok) {
+          const data = await response.json();
+          setCoordinates(data);
+          
+          // Build the KD-tree with the fetched coordinates
+          kdTreeRef.current.build(data);
+        } else {
+          console.error('Failed to fetch coordinates');
+        }
       } catch (error) {
         console.error('Error fetching coordinates:', error);
       } finally {
@@ -73,20 +83,34 @@ export default function InteractiveMap() {
     e.preventDefault();
     
     if (activeCoordinate && newLabel) {
+      const newCoordinate: Coordinate = {
+        id: Date.now().toString(),
+        x: activeCoordinate.x,
+        y: activeCoordinate.y,
+        label: newLabel
+      };
+      
       try {
         setLoading(true);
-        
-        const savedCoordinate = await storageService.save({
-          x: activeCoordinate.x,
-          y: activeCoordinate.y,
-          label: newLabel
+        const response = await fetch('/api/coordinates', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newCoordinate),
         });
-        
-        // Update state with the new coordinate
-        setCoordinates(prev => [...prev, savedCoordinate]);
-        
-        // Add the new coordinate to the KD-tree
-        kdTreeRef.current.insert(savedCoordinate);
+
+        if (response.ok) {
+          const savedCoordinate = await response.json();
+          
+          // Update state with the new coordinate
+          setCoordinates(prev => [...prev, savedCoordinate]);
+          
+          // Add the new coordinate to the KD-tree
+          kdTreeRef.current.insert(savedCoordinate);
+        } else {
+          console.error('Failed to save coordinate');
+        }
       } catch (error) {
         console.error('Error saving coordinate:', error);
       } finally {
@@ -101,9 +125,11 @@ export default function InteractiveMap() {
   const handleDelete = async (id: string) => {
     try {
       setDeletingId(id);
-      const success = await storageService.delete(id);
+      const response = await fetch(`/api/coordinates?id=${id}`, {
+        method: 'DELETE',
+      });
 
-      if (success) {
+      if (response.ok) {
         // Filter out the deleted coordinate
         setCoordinates(prev => prev.filter(coord => coord.id !== id));
         
