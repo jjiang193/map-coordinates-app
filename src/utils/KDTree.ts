@@ -2,7 +2,7 @@ interface Point {
   id: string;
   x: number;
   y: number;
-  [key: string]: any;
+  label?: string;
 }
 
 class KDNode {

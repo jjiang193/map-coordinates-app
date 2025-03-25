@@ -206,7 +206,7 @@ export default function InteractiveMap() {
           width={1000}
           height={500}
           className="cursor-crosshair"
-          unoptimized  // Add this to allow using external images
+          unoptimized
         />
         
         {/* Display all saved coordinates as red dots */}

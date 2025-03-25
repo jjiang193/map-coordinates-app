@@ -81,6 +81,15 @@ The application uses Vercel's `/tmp` directory for storage in production, which 
 
 No additional environment variables are required for basic functionality.
 
+### Troubleshooting Deployment
+
+If you encounter issues during deployment:
+
+1. Check the image path in `InteractiveMap.tsx` matches the actual file in `/public/images/`
+2. Ensure API routes have `export const dynamic = 'force-dynamic'` to work correctly with serverless functions
+3. TypeScript types should be specific and avoid using `any` type
+4. For persistent data storage, consider using Vercel KV, MongoDB Atlas, or another database solution
+
 ### Custom Domains
 
 After deployment, you can configure a custom domain in the Vercel dashboard under the "Domains" section of your project.

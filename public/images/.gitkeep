@@ -1,0 +1,2 @@
+# This file ensures that the images directory is included in Git
+# It can be removed if there are other files in this directory 
